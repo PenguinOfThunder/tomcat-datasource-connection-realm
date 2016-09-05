@@ -5,11 +5,11 @@
 This is a custom Tomcat realm that will authenticate a user through the
 authentication process of the DataSource itself.
 
-For example given a `javax.sql.DataSource`, the user will be granted access
+For example given a [javax.sql.DataSource](https://docs.oracle.com/javase/7/docs/api/javax/sql/DataSource.html), the user will be granted access
 if that user has access to open a connection through that DataSource.
 
 The most common usage will be through the JDBC mode
-by using a connectionURL and driverName property.
+by using a `connectionURL` and `driverName` property.
 
 **Note that connection pooling is inherently incompatible with this kind
 of authentication.  Use a separate connection pool for data *access*.**
@@ -43,9 +43,8 @@ This .jar file must be installed in the `$CATALINA_HOME/server/lib` directory of
 ### Example Tomcat server.xml ###
 
 ```xml
- &lt;Realm className="net.alphapenguin.catalina.realm.DataSourceConnectionRealm"
- 	  connectionURL="jdbc:mysql://localhost:3306/mydb"
- 	  driverName="com.mysql.jdbc.Driver"
- 	  roleQuery="select rolename from mydb.user_roles where username = ?"/&gt;
+<Realm className="net.alphapenguin.catalina.realm.DataSourceConnectionRealm"
+  connectionURL="jdbc:mysql://localhost:3306/mydb"
+  driverName="com.mysql.jdbc.Driver"
+  roleQuery="select rolename from mydb.user_roles where username = ?"/>
 ```
-
