@@ -2,6 +2,8 @@
 
 ## What is it? ##
 
+Note: I created this in August 2007. It may not work with newer versions of Tomcat.
+
 This is a custom Tomcat realm that will authenticate a user through the
 authentication process of the DataSource itself.
 
