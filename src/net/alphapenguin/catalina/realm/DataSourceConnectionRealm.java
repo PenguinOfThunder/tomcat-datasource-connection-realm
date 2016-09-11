@@ -1,5 +1,5 @@
 /*
- * Copyright 2007 Tore Andre Klock
+ * Copyright 2007-2016 Tore Andre Klock
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,11 +22,11 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import javax.naming.Context;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
-import org.apache.catalina.ServerFactory;
 import org.apache.catalina.core.StandardServer;
 import org.apache.catalina.realm.GenericPrincipal;
 import org.apache.naming.ContextBindings;
@@ -85,7 +85,7 @@ import org.apache.naming.ContextBindings;
  * </pre>
  *
  * @author Tore A. Klock
- * @version 1.0
+ * @version 1.1
  *
  * TODO: add support for getting roles from columns (e.g. is_admin)
  */
@@ -179,13 +179,12 @@ public class DataSourceConnectionRealm extends org.apache.catalina.realm.RealmBa
         }
         try {
 
-            Context ctx = null;
+            Context ctx;
             if (localDataSource) {
                 ctx = ContextBindings.getClassLoader();
                 ctx = (Context) ctx.lookup("comp/env");
             } else {
-                StandardServer server
-                        = (StandardServer) ServerFactory.getServer();
+                StandardServer server = (StandardServer)this.getServer();                
                 ctx = server.getGlobalNamingContext();
             }
             DataSource dataSource = (DataSource) ctx.lookup(getResourceName());
@@ -237,7 +236,7 @@ public class DataSourceConnectionRealm extends org.apache.catalina.realm.RealmBa
                             containerLog.trace("Adding role " + role);
                             roles.add(role);
                         }
-                        p = new GenericPrincipal(this, username, password, roles);
+                        p = new GenericPrincipal(username, password, roles);
                     } finally {
                         rs.close();
                     }
@@ -245,7 +244,8 @@ public class DataSourceConnectionRealm extends org.apache.catalina.realm.RealmBa
                     ps.close();
                 }
             } else {
-                p = new GenericPrincipal(this, username, password);
+                List<String> roles = Collections.emptyList();
+                p = new GenericPrincipal(username, password, roles);
             }
         } else {
             containerLog.error("Connection was null");
